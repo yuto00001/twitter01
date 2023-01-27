@@ -1,5 +1,4 @@
-import firebase from "firebase/app";
-
+import { firebase } from "@/main.js"
 import { format } from 'date-fns';
 const myTimestamp = firebase.firestore.Timestamp.now();
 const myToDated = myTimestamp.toDate();
@@ -137,5 +136,8 @@ export default {
         }
       });
     }
+  },
+  created() {
+    this.observer()
   }
 }
