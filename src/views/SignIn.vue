@@ -1,6 +1,5 @@
 <template>
   <div id="signIn">
-    <div>signIn</div>
     <div class="signInArea" v-if="!login_info.login_email">
       <h2>サインインしてください</h2>
       <div>
@@ -34,8 +33,8 @@
         </form>
       </div>
       <div>
+        <router-link to="/login">既にsignInしている方はこちら</router-link><br/>
         <button @click="signIn">signIn</button><br/>
-        <button @click="login">login</button><br/>
         <button @click="signOut">signOut</button>
       </div>
     </div>
@@ -71,6 +70,7 @@ export default {
         alert('signIn しました')
         console.log('signIn run', user)
         this.fetchTweet()
+        this.fetchUser()
       })
       .catch((error) => {
         console.log('signIn error', error)
@@ -83,6 +83,7 @@ export default {
         alert('login しました')
         console.log('signIn run', user)
         this.fetchTweet()
+        this.fetchUser()
       })
       .catch((error) => {
         console.log('signIn error', error)
@@ -134,16 +135,17 @@ export default {
       if(!this.login_info.login_email) {
         return
       } else {
-      console.log('fetchUser');
-      firebase.firestore().collection("user").where('u_record.u_uuid', "==", this.login_info.login_uuid).get()
+        console.log('fetchUser');
+        firebase.firestore().collection("user").where('u_record.u_uuid', "==", this.login_info.login_uuid).get()
         .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
+          if (!querySnapshot.empty) {
+            const doc = querySnapshot.docs[0];
             console.log('fetchUser doc', doc.id, " => ", doc.data());
-            this.user_info.push(doc.data())
-            this.login_info.login_accountName = doc.data().u_userInfo.u_accountName
-            this.login_info.login_name = doc.data().u_userInfo.u_name
-            this.login_info.login_icon = doc.data().u_userInfo.u_icon
-          });
+            this.user_info.push(doc.data());
+            this.login_info.login_accountName = doc.data().u_userInfo.u_accountName;
+            this.login_info.login_name = doc.data().u_userInfo.u_name;
+            this.login_info.login_icon = doc.data().u_userInfo.u_icon;
+          }
         })
         .catch((error) => {
           console.log('fetchUser error',error)
@@ -171,7 +173,7 @@ export default {
       }
     },
     observer() {
-      firebase.auth().onAuthStateChanged((user) => { //todo これだけでyutoを特定し、取得できている？userが増えたらどうなる？
+      firebase.auth().onAuthStateChanged((user) => {
         if (user) {
           this.login_info.login_email = user.email
           this.login_info.login_uuid = user.uid
@@ -186,6 +188,7 @@ export default {
         } else {
           this.login_info.login_accountName = ''
           this.login_info.login_email = ''
+          this.login_info.login_name = ''
           this.login_info.login_uuid = ''
           this.user_info = ''
           this.timeline_tweetContents = ''
