@@ -7,9 +7,10 @@
       <router-link to="/login">login</router-link>
     </nav>
     <router-view/>
-    <h1>login : {{ login_info.login_accountName }}</h1>
-    <button @click="signOut">signOut</button>
+    <h2 v-if="!login_info.login_email">サインインしてください</h2>
     <div v-if="login_info.login_email">
+      <h1>login : {{ login_info.login_accountName }}</h1>
+      <button @click="signOut">signOut</button>
       <TweetForm v-model="tweetContent"
       :loginInfo="login_info"
       @fetchTweetChild="fetchTweet"
@@ -271,46 +272,6 @@ export default {
         }
       });
     }
-    // signOut() {
-    //   firebase.auth().signOut().then(() => {
-    //     alert('logOut しました')
-    //   }).catch((error) => {
-    //     console.log('signOut error', error)
-    //   });
-    // },
-    // sortTweet() {
-    //   this.timeline_tweetContents.sort((a, b) => {
-    //     if(a.t_record.t_createAt < b.t_record.t_createAt) {
-    //       return 1;
-    //     }else if (a.t_record.t_createAt > b.t_record.t_createAt) {
-    //       return -1;
-    //     } else {
-    //       return 0;
-    //     }
-    //   });
-    //   console.log('sortTweet run')
-    // },
-    // fetchTweet() {
-    //   this.timeline_tweetContents = []
-    //     console.log('fetchTweet');
-    //     firebase.firestore().collection("tweet").get()
-    //     .then((querySnapshot) => {
-    //       querySnapshot.forEach((doc) => {
-    //         const newDoc = {
-    //           ...doc.data(),
-    //           t_userInfo: {...doc.data().t_userInfo, t_docId: doc.id},
-    //         }
-    //         this.timeline_tweetContents.push(newDoc)
-    //         console.log('fetchTweet doc', doc.id, " => ", doc.data());
-    //       })
-    //       this.sortTweet()
-    //     })
-    // },
-    // observer() {
-    //   this.login_info.login_email = ' '
-    //   this.login_info.login_uuid = ' '
-    //   this.fetchTweet()
-    // }
   },
   created() {
     this.observer()
