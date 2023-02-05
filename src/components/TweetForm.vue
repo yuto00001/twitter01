@@ -54,7 +54,7 @@ export default {
       .then((docRef) => {
         this.tweetContent = ''
         console.log("createTweet run", docRef);
-        this.$emit('fetchTweetChild')
+        this.$emit('parentObserver')
       })
       .catch((error) => {
           console.error("Error createTweet : ", error);
