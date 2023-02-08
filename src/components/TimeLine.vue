@@ -50,14 +50,9 @@ export default {
     },
     loginInfo: {
       type: Object,
-      // required: true,
       default() {
         return {
-          login_uuid: ' ',
-          login_email: ' ',
-          login_name: ' ',
           login_accountName: ' ',
-          login_icon: ' ',
         }
       },
     },
@@ -75,43 +70,10 @@ export default {
       firebase.firestore().collection("tweet").doc(tweet.t_userInfo.t_docId).delete()
       .then(() => {
         console.log("Document successfully deleted!");
-        this.fetchTweet()
+        this.$emit('fetchTweet')
       }).catch((error) => {
         console.error("Error removing document: ", error);
       });
-    },
-    sortTweet() {
-      this.timeline_tweetContents.sort((a, b) => {
-        if(a.t_record.t_createAt < b.t_record.t_createAt) {
-          return 1;
-        }else if (a.t_record.t_createAt > b.t_record.t_createAt) {
-          return -1;
-        } else {
-          return 0;
-        }
-      });
-      console.log('sortTweet run')
-    },
-    fetchTweet() {
-      this.timeline_tweetContents = [] //!emit使って親にデータを送る。
-      this.$emit('timeline_tweetContents: []', this.tweetContent)
-      if(!this.login_info.login_email) {
-        return
-      } else {
-        console.log('fetchTweet');
-        firebase.firestore().collection("tweet").get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            const newDoc = {
-              ...doc.data(),
-              t_userInfo: {...doc.data().t_userInfo, t_docId: doc.id},
-            }
-            this.timeline_tweetContents.push(newDoc)
-            console.log('fetchTweet doc', doc.id, " => ", doc.data());
-          })
-          this.sortTweet()
-        })
-      }
     },
   },
 }

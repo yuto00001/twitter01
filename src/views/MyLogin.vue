@@ -47,6 +47,9 @@
 import firebase from "firebase/app";
 import { signOut } from "@/module/signOut.js";
 
+import TimeLine from "@/components/TimeLine.vue";
+
+
 export default {
   data() {
     return {
@@ -76,7 +79,7 @@ export default {
       var user = userCredential.user;
       alert('login しました')
       console.log('signIn run', user)
-      this.fetchTweet()
+      TimeLine.methods.fetchTweet()
       this.fetchUser()
     })
     .catch((error) => {
@@ -89,5 +92,5 @@ export default {
 </script>
 
 <style>
-@import '@/css/nav.css';
+@import '@/styles/nav.css';
 </style>

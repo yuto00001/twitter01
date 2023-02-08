@@ -36,7 +36,7 @@ export default {
   name: 'appComponent',
   components: {
     TimeLine,
-    TweetForm, //! 次確認
+    TweetForm, //todo 次確認
   },
   data() {
     return {
@@ -82,6 +82,34 @@ export default {
       });
     }
     },
+    fetchTweet() {
+      this.timeline_tweetContents = []
+      console.log('fetchTweet');
+      firebase.firestore().collection("tweet").get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const newDoc = {
+            ...doc.data(),
+            t_userInfo: {...doc.data().t_userInfo, t_docId: doc.id},
+          }
+          this.timeline_tweetContents.push(newDoc)
+          console.log('fetchTweet doc', doc.id, " => ", doc.data());
+        })
+        this.sortTweet()
+        })
+    },
+    sortTweet() {
+      this.timeline_tweetContents.sort((a, b) => {
+        if(a.t_record.t_createAt < b.t_record.t_createAt) {
+          return 1;
+        }else if (a.t_record.t_createAt > b.t_record.t_createAt) {
+          return -1;
+        } else {
+          return 0;
+        }
+      });
+      console.log('sortTweet run')
+    },
     observer() {
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
@@ -93,7 +121,7 @@ export default {
           this.signIn_input.signIn_email = ''
           this.signIn_input.signIn_password = ''
           console.log('observer run', user)
-          TimeLine.methods.fetchTweet()
+          this.fetchTweet()
           this.fetchUser()
         } else {
           this.login_info.login_accountName = ''

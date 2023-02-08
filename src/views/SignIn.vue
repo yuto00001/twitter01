@@ -46,6 +46,8 @@
 import firebase from "firebase/app";
 import { signOut } from "@/module/signOut.js";
 
+import TimeLine from "@/components/TimeLine.vue";
+
 import { format } from 'date-fns';
 const myTimestamp = firebase.firestore.Timestamp.now();
 const myToDated = myTimestamp.toDate();
@@ -83,7 +85,7 @@ export default {
       this.createUser(uid)
       alert('signIn しました')
       console.log('signIn run', user)
-      this.fetchTweet()
+      TimeLine.methods.fetchTweet()
       this.fetchUser()
     })
     .catch((error) => {
@@ -118,5 +120,5 @@ export default {
 </script>
 
 <style>
-@import '@/css/nav.css';
+@import '@/styles/nav.css';
 </style>
